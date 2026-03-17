@@ -22,11 +22,19 @@
         .option-item { padding: 10px 15px; border: 1px solid #eee; border-radius: 6px; cursor: pointer; display: flex; align-items: center; }
         .option-item:hover { background: #f1f8e9; }
         input[type="radio"] { margin-right: 12px; cursor: pointer; }
+        
         #btn-submit { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 20px; }
         #btn-submit:hover { background: #1b5e20; }
+        #btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
         .correct-ans { background: #c8e6c9 !important; border-color: #4caf50 !important; font-weight: bold; }
         .wrong-ans { background: #ffcdd2 !important; border-color: #f44336 !important; }
         #result-display { position: sticky; top: 10px; background: var(--primary); color: white; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.3em; margin-bottom: 20px; display: none; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* Phần Bill tài khoản */
+        .bank-info { margin-top: 40px; padding: 20px; border: 2px dashed #2e7d32; border-radius: 12px; display: flex; align-items: center; gap: 20px; background: #fffde7; }
+        .bank-info img { width: 150px; border-radius: 8px; }
+        .bank-details { font-size: 1.1em; color: #333; }
     </style>
 </head>
 <body>
@@ -41,15 +49,26 @@
 
     <div id="result-display"></div>
     <div id="quiz-area"></div>
+    
     <button id="btn-submit" onclick="gradeQuiz()">NỘP BÀI & KIỂM TRA</button>
+
+    <div class="bank-info">
+        <img src="LINK_ẢNH_QR_CỦA_BẠN" alt="Mã QR Chuyển Khoản">
+        <div class="bank-details">
+            <strong>ỦNG HỘ DUY TRÌ SERVER</strong><br>
+            Ngân hàng: <b>VIETCOMBANK</b><br>
+            Số tài khoản: <b>1234567890</b><br>
+            Chủ tài khoản: <b>NGUYỄN VĂN A</b>
+        </div>
+    </div>
 </div>
 
 <script>
-// Thông tin Telegram bạn cung cấp
+// CẤU HÌNH TELEGRAM
 const TELEGRAM_BOT_TOKEN = '8758019971:AAFa853BCy_frWLbUrPang31P3cgP8iwyH0';
 const TELEGRAM_CHAT_ID = '6994683867';
 
-const quizData = const quizData = [
+const quizData = [
     ["LLVT nhân dân Việt Nam gồm những lực lượng nào?", "Quân đội nhân dân; Công an nhân dân; Dân quân tự vệ", "Công an nhân dân; Dân quân tự vệ; Vệ sĩ", "Dân quân tự vệ; Công nhân quốc phòng; Vệ sĩ", "Dân quân tự vệ; Quân đội nhân dân; Lực lượng cảnh sát nhân dân"],
     ["Ngày đầu thành lập, “Đội Việt Nam tuyên truyền giải phóng quân” có:", "34 người, 34 khẩu súng các loại.", "34 người, 30 khẩu súng, 04 giáo mác.", "35 người, 35 khẩu súng các loại.", "36 người, 36 khẩu súng."],
     ["Ngày truyền thống của QĐND Việt Nam là ngày nào?", "22/12/1944", "22/12/1945", "19/8/1945", "19/8/1944"],
@@ -58,8 +77,8 @@ const quizData = const quizData = [
     ["Sau khi hạ đồn Phay Khắt và Nà Ngần, QĐND Việt Nam đã viết nên truyền thống gì?", "“Đánh thắng trận đầu”", "“Quyết chiến, quyết thắng”", "“Trung thành với Đảng”", "“Biết đánh, biết thắng”"],
     ["Bản chất của QĐND Việt Nam là:", "đội quân cách mạng, mang bản chất của giai cấp công nhân, tính nhân dân và dân tộc sâu sắc.", "mang bản chất giai cấp nông dân, tính nhân dân và dân tộc sâu sắc.", "là đội quân cách mạng, mang bản chất của giai cấp trí thức, tính nhân dân sâu sắc.", "mang bản chất của Đảng Cộng sản Việt Nam, tính dân tộc sâu sắc."],
     ["Đảng Cộng sản Việt Nam lãnh đạo QĐND Việt Nam:", "tuyệt đối, trực tiếp về mọi mặt.", "tuyệt đối về mọi mặt.", "trực tiếp về mọi mặt.", "trong lĩnh vực quân sự, tác chiến."],
-    ["Quá trình xây dựng, chiến đấu và trưởng thành QĐND Việt Nam đã viết nên bao nhiêu truyền thống vẻ vang?", "9", "11", "10", "12"],
-    ["Để tạo nên sức mạnh tổng hợp thì QĐND Việt Nam đã:", "kết hợp sáng tạo nhiều cách đánh, nhiều hình thức đấu tranh của nhiều lực lượng.", "đoàn kết, sáng tạo nhiều lực lượng.", "đấu tranh trên tất cả các mặt trận.", "kết hợp nhiều hình thức đấu tranh của nhiều lực lượng."],
+    ["Quá trình xây dựng, chiến đấu và trưởng thành QĐND Việt Nam đã viết nên bao nhiêu truyền thống vẻ vang?", "11", "9", "10", "12"],
+    ["Để tạo nên sức mạnh tổng hợp thì QĐND Việt Nam đã:", "kết hợp sáng tạo nhiều cách đánh, many hình thức đấu tranh của nhiều lực lượng.", "đoàn kết, sáng tạo nhiều lực lượng.", "đấu tranh trên tất cả các mặt trận.", "kết hợp nhiều hình thức đấu tranh của nhiều lực lượng."],
     ["Ngày truyền thống của CAND Việt Nam?", "19/8/1945", "22/12/1944", "2/9/1945", "19/8/1944"],
     ["Trước khi CAND Việt Nam ra đời, tổ chức nào chưa được thành lập?", "Nha công an", "Đội trinh sát", "Đội tự vệ đỏ", "Đội tự vệ công nông"],
     ["Việt Nam công an vụ được hợp nhất từ:", "Sở cảnh sát và Sở liêm phóng toàn quốc", "Sở cảnh sát và Nha công an", "Sở trinh sát và Sở liêm phóng toàn quốc","Nha công an và Sở liêm phóng toàn quốc"],
@@ -110,7 +129,6 @@ const quizData = const quizData = [
     ["Quân nhân gọi nhau bằng:", "“Đồng chí”", "“Đồng minh”", "“Đồng đội”", "“Chú bộ đội”"],
     ["Trong điều kiện bình thường, quân nhân có bao nhiêu chế độ làm việc, sinh hoạt?", "11", "12", "13", "14"]
 ]; 
- 
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -146,32 +164,25 @@ function initQuiz() {
 
 async function sendToTelegram(name, score, total) {
     const percent = ((score / total) * 100).toFixed(1);
-    const message = `🔔 *KẾT QUẢ BÀI THI MỚI*\n\n👤 *Họ tên:* ${name}\n🎯 *Điểm số:* ${score}/${total}\n📊 *Tỷ lệ:* ${percent}%\n🕒 *Thời gian:* ${new Date().toLocaleString('vi-VN')}`;
-    
+    const message = `🔔 *BÁO CÁO KẾT QUẢ*\n\n👤 *Họ tên:* ${name}\n🎯 *Điểm:* ${score}/${total}\n📊 *Tỷ lệ:* ${percent}%\n🕒 *Lúc:* ${new Date().toLocaleString('vi-VN')}`;
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     
     try {
         await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' })
         });
-    } catch (e) {
-        console.error("Lỗi gửi dữ liệu Telegram:", e);
-    }
+    } catch (e) { console.error("Lỗi gửi Bot:", e); }
 }
 
 function gradeQuiz() {
-    const studentNameInput = document.getElementById('student-name');
-    const studentName = studentNameInput.value.trim();
+    const nameInput = document.getElementById('student-name');
+    const name = nameInput.value.trim();
     
-    if (!studentName) {
-        alert("⚠️ Vui lòng nhập Họ và Tên để hệ thống lưu điểm!");
-        studentNameInput.focus();
+    if (!name) {
+        alert("⚠️ Vui lòng nhập Họ Tên trước khi nộp bài!");
+        nameInput.focus();
         return;
     }
 
@@ -179,8 +190,8 @@ function gradeQuiz() {
     activeData.forEach((item, i) => {
         const box = document.getElementById(`q-box-${i}`);
         const selected = document.querySelector(`input[name="question${i}"]:checked`);
-        
         const labels = box.querySelectorAll('.option-item');
+        
         labels.forEach(l => l.classList.remove('correct-ans', 'wrong-ans'));
 
         if (selected) {
@@ -189,34 +200,26 @@ function gradeQuiz() {
                 selected.parentElement.classList.add('correct-ans');
             } else {
                 selected.parentElement.classList.add('wrong-ans');
-                labels.forEach(l => {
-                    if (l.innerText.trim() === item.correct) l.classList.add('correct-ans');
-                });
+                labels.forEach(l => { if (l.innerText.trim() === item.correct) l.classList.add('correct-ans'); });
             }
         } else {
-            labels.forEach(l => {
-                if (l.innerText.trim() === item.correct) l.classList.add('correct-ans');
-            });
+            labels.forEach(l => { if (l.innerText.trim() === item.correct) l.classList.add('correct-ans'); });
         }
     });
 
     const result = document.getElementById('result-display');
     result.style.display = 'block';
-    result.innerHTML = `🏁 KẾT QUẢ: ${score} / ${activeData.length} CÂU ĐÚNG (${((score/activeData.length)*100).toFixed(1)}%)`;
+    result.innerHTML = `🏁 KẾT QUẢ CỦA ${name.toUpperCase()}: ${score} / ${activeData.length} CÂU ĐÚNG`;
     
-    // Vô hiệu hóa nút và input sau khi nộp
     document.getElementById('btn-submit').disabled = true;
-    document.getElementById('btn-submit').innerText = "KẾT QUẢ ĐÃ ĐƯỢC GỬI";
-    studentNameInput.disabled = true;
+    document.getElementById('btn-submit').innerText = "ĐÃ GỬI KẾT QUẢ VỀ HỆ THỐNG";
+    nameInput.disabled = true;
 
-    // Gửi về Telegram
-    sendToTelegram(studentName, score, activeData.length);
-    
+    sendToTelegram(name, score, activeData.length);
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 initQuiz();
 </script>
-
 </body>
 </html>
